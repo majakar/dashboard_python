@@ -28,7 +28,7 @@ def load_recordings():
 @cache.memoize(timeout=3600)
 def load_reading_time():
     with mysql_engine.connect() as conn:
-        return pd.read_sql(
+        df =  pd.read_sql(
             text("""
             SELECT DATE(date) AS activity_date,
                    countryCode,
@@ -40,3 +40,5 @@ def load_reading_time():
             """),
             conn
         )
+        df["activity_date"] = pd.to_datetime(df["activity_date"])
+        return df
