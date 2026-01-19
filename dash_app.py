@@ -110,10 +110,15 @@ def create_dash_app(flask_server):
     def update_reading(start_date, end_date, countries):
         df = reading_df.copy()
         if start_date:
-            start = pd.to_datetime(start_date).tz_convert(None) if hasattr(pd.to_datetime(start_date), 'tz') else pd.to_datetime(start_date)
+            start = pd.to_datetime(start_date)
+            if start.tzinfo is not None:
+                start = start.tz_convert(None)
             df = df[df["activity_date"] >= start]
+
         if end_date:
-            end = pd.to_datetime(end_date).tz_convert(None) if hasattr(pd.to_datetime(end_date), 'tz') else pd.to_datetime(end_date)
+            end = pd.to_datetime(end_date)
+            if end.tzinfo is not None:
+                end = end.tz_convert(None)
             df = df[df["activity_date"] <= end]
         if countries:
             df = df[df["countryCode"].isin(countries)]
